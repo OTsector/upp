@@ -24,8 +24,7 @@
 
 
 ## how to install:
-	sudo su
-	wget https://raw.githubusercontent.com/OTsector/upp/master/upp.sh -O /usr/bin/upp
-	chmod +x /usr/bin/upp
+	sudo wget https://raw.githubusercontent.com/OTsector/upp/master/upp.sh -O /usr/bin/upp
+	sudo chmod +x /usr/bin/upp
 ## One line command:
-	sudo su && wget https://raw.githubusercontent.com/OTsector/upp/master/upp.sh -O /usr/bin/upp && chmod +x /usr/bin/upp
+	sudo wget https://raw.githubusercontent.com/OTsector/upp/master/upp.sh -O /usr/bin/upp && sudo chmod +x /usr/bin/upp
