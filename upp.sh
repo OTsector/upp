@@ -1,8 +1,17 @@
 #!/bin/bash
 bold=$(tput bold)
 normal=$(tput sgr0)
-banner="\n # ./07.dat\n\t\t ${bold}_\n\t0${normal}${bold}7${normal}\t[|] ${bold}0${normal}ffensive ${bold}7${normal}ester\n\n"
+banner="# ./07.dat\n\t\t ${bold}_\n\t0${normal}${bold}7${normal}\t[|] ${bold}0${normal}ffensive ${bold}7${normal}ester\n\n"
 clear
+echo -en "# \r"; sleep 0.1
+echo -en "# .\r"; sleep 0.1
+echo -en "# ./ \r"; sleep 0.1
+echo -en "# ./0 \r"; sleep 0.1
+echo -en "# ./07 \r"; sleep 0.1
+echo -en "# ./07. \r"; sleep 0.2
+echo -en "# ./07.d \r"; sleep 0.2
+echo -en "# ./07.da \r"; sleep 0.2
+echo -en "# ./07.dat \r"; sleep 0.2
 echo -e ${banner} && echo -e "
 
                    ▄ 
