@@ -29,7 +29,7 @@ user2014
 
 "
 if ! [[ $1 ]]; then
-	echo -e "\t*select new file location: [/root/Desktop/pass.list]"
+	echo -e "\t*select file location: [/root/Desktop/pass.list]"
 	read passlist
 else
 	passlist=$1
@@ -53,15 +53,17 @@ echo -e "\ttype words: [sweet macaron music 1996]"
 read words
 echo  $words | sed 's/ /\n/g' >> $passlist
 while true; do
-	echo -e "\n\tselect your option:\n\n\t[0] exit / done\n\t[1] l337 mode\n\t[2] add years\n\t[3] add special characters\n\t[4] add some word for all\n\t[5] remove equal words"
+	echo -e "\n\tselect your option:\n\t[0] exit / done\n\t[1] l337 mode\n\t[2] add years\n\t[3] add special characters\n\t[4] add some word for all\n\t[5] remove equal words & sort"
 	read opinion
 	case $opinion in
 	0)
 		exit 0
 	;;
 	1)
+		(
 		leet=$(echo $words | sed 's/a/4/g' | sed 's/A/4/g' | sed 's/e/3/g' | sed 's/E/3/g' | sed 's/i/1/g' | sed 's/I/1/g' | sed 's/m/w/g' | sed 's/M/w/g' | sed 's/o/0/g' | sed 's/O/0/g' | sed 's/s/5/g' | sed 's/S/5/g' | sed 's/t/7/g' | sed 's/T/7/g' | sed 's/g/9/g' | sed 's/G/9/g' | sed 's/w/m/g' | sed 's/W/m/g'| sed 's/z/2/g'| sed 's/Z/2/g')
 		echo  $leet | sed 's/ /\n/g' >> $passlist
+		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 	;;
 	2)
 		wordarray=($words)
@@ -73,6 +75,7 @@ while true; do
 		0);;
 		1)
 			echo -e "\tbeginning:"
+			(
 			numbword="0"
 			numbyear="0"
 			while [[ true ]]; do
@@ -102,6 +105,7 @@ while true; do
 					let numbword=$numbword+1
 				fi
 			done
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 		;;
 		2)
 			echo -e "\tend:"
@@ -137,6 +141,7 @@ while true; do
 		;;
 		3)
 			echo -e "\tbeginning & end:"
+			(
 			numbword="0"
 			numbyear="0"
 			while [[ true ]]; do
@@ -167,6 +172,7 @@ while true; do
 					let numbword=$numbword+1
 				fi
 			done
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 		;;
 		*)
 			echo -e "\twrong choice"
@@ -182,6 +188,7 @@ while true; do
 		0);;
 		1)
 			echo -e "\tbeginning:"
+			(
 			numbword="0"
 			numbspecial="0"
 			while [[ true ]]; do
@@ -211,9 +218,11 @@ while true; do
 					let numbword=$numbword+1
 				fi
 			done
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 		;;
 		2)
 			echo -e "\tend:"
+			(
 			numbword="0"
 			numbspecial="0"
 			while [[ true ]]; do
@@ -243,9 +252,11 @@ while true; do
 					let numbword=$numbword+1
 				fi
 			done
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 		;;
 		3)
 			echo -e "\tbeginning & end:"
+			(
 			numbword="0"
 			numbspecial="0"
 			while [[ true ]]; do
@@ -276,6 +287,7 @@ while true; do
 					let numbword=$numbword+1
 				fi
 			done
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 		;;
 		*)
 			echo -e "\twrong choice"
@@ -295,7 +307,7 @@ while true; do
 			0);;
 			1)
 				echo -e "\tbeginning:"
-				#aq some
+				(
 				numbword="0"
 				while [[ true ]]; do
 					currentword=${wordarray[$numbword]}
@@ -307,10 +319,13 @@ while true; do
 						sleep 0.3 && let numbword=$numbword+1
 					fi
 				done
+				loadingfinish=true
+				) | loading
 			;;
 			2)
 			echo -e "\tend:"
 				numbword="0"
+				(
 				while [[ true ]]; do
 					currentword=${wordarray[$numbword]}
 					echo "$some$currentword" | sed 's/ /\n/g' >> $passlist
@@ -321,10 +336,12 @@ while true; do
 						sleep 0.3 && let numbword=$numbword+1
 					fi
 				done
+				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 			;;
 			3)
 			echo -e "\tbeginning & end:"
 				numbword="0"
+				(
 				while [[ true ]]; do
 					currentword=${wordarray[$numbword]}
 					echo "$currentword$some" | sed 's/ /\n/g' >> $passlist
@@ -336,6 +353,7 @@ while true; do
 						sleep 0.3 && let numbword=$numbword+1
 					fi
 				done
+				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 			;;
 			*)
 				echo -e "\twrong choice"
@@ -345,9 +363,11 @@ while true; do
 		fi
 	;;
 	5)
-		echo -e "\tremove equal words:"
+		echo -e "\tremove equal words & sort:"
+		(
 		echo $(sort $passlist | uniq) > $passlist
 		foo=$(cat $passlist); echo -e ${foo// /\\n} > $passlist
+		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 	;;
 	*)
 		echo -e "\twrong choice"
