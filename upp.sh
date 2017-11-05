@@ -38,7 +38,9 @@ if [[ $passlist = "" ]]; then
 	echo -e "\tsorry, but select a file location for save passlist is too important!\n"
 	exit 0
 fi
-
+if [[ ${passlist:00:01} = "~" ]]; then
+	passlist=$HOME${passlist:1}
+fi
 setfile=$(echo $passlist | sed 's/\// /g') && setfilearray=($setfile) && file=${setfilearray[-1]}
 setdirectory=$(echo $passlist |  sed 's/.'$file'//') && directory=$setdirectory
 
