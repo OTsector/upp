@@ -34,6 +34,12 @@ if ! [[ $1 ]]; then
 else
 	passlist=$1
 fi
+
+if [ -d $passlist ]; then
+	echo -e "\terror: this is directory name!\n"
+	exit 0
+fi
+
 if [[ $passlist = "" ]]; then
 	echo -e "\tsorry, but select a file location for save passlist is too important!\n"
 	exit 0
@@ -97,7 +103,7 @@ while true; do
 							numbnumber="0"
 							break
 						fi
-					if ! [[ $(let lastnumbnumber=${#number[@]}-1 && $lastnumbnumber) = $numbnumber ]]; then
+					if ! [[ $(let lastnumbnumber=${#number[@]}-1 && $lastnumbnumber) = $numbnumber ]];then
 						let numbnumber=$numbnumber+1
 					else
 						break
