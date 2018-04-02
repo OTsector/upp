@@ -34,15 +34,13 @@ if ! [[ $1 ]]; then
 else
 	passlist=$1
 fi
-
 if [ -d $passlist ]; then
 	echo -e "\terror: this is directory name!\n"
-	exit 0
+	exit 1
 fi
-
 if [[ $passlist = "" ]]; then
 	echo -e "\tsorry, but select a file location for save passlist is too important!\n"
-	exit 0
+	exit 1
 fi
 if [[ ${passlist:00:01} = "~" ]]; then
 	passlist=$HOME${passlist:1}
@@ -52,7 +50,7 @@ setdirectory=$(echo $passlist |  sed 's/.'$file'//') && directory=$setdirectory
 
 if [ ! -d $directory ]; then
 	echo -e "\terror: can't create file on this directory!\n"
-	exit 0
+	exit 1
 fi
 if [ ! -f $passlist ]; then
 	echo -e "" > $passlist
@@ -443,4 +441,4 @@ while true; do
 	;;
 	esac
 done
-exit 1
+exit 0
