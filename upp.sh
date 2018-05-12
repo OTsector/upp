@@ -59,7 +59,7 @@ echo -e "\ttype words: [sweet macaron music 1996]"
 read words
 echo  $words | sed 's/ /\n/g' >> $passlist
 while true; do
-	echo -e "\n\tselect your option:\n\t[0] exit / done\n\t[1] l337 mode\n\t[2] add numbers\n\t[3] add special characters\n\t[4] add some words for all\n\t[5] remove equal words & sort"
+	echo -e "\n\tselect your option:\n\t[0] exit / done\n\t[1] l337 mode\n\t[2] UppERcasE mode\n\t[3] add numbers\n\t[4] add special characters\n\t[5] add some words for all\n\t[6] remove equal words & sort"
 	read opinion
 	case $opinion in
 	0)
@@ -72,6 +72,34 @@ while true; do
 		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 	;;
 	2)
+		(
+		wordarray=($words)
+		numbword=0
+		while [[ true ]]; do
+			let lastnumbnumber=${#number[@]}-1;
+			currentword=${wordarray[$numbword]}
+			if [[ $currentword == "" ]]; then
+				break
+			fi
+			for (( a = 0; a < ${#currentword}; a++ )); do
+				for (( b = a; b <= ${#currentword}; b++ )); do
+					if [[ $a != $b ]]; then
+						first=${currentword:0:a}
+						second=${currentword:a:b-a}
+						last=${currentword:b}
+						echo $first${second^^}$last >> $passlist
+					fi
+				done
+			done
+			if [[ $numbword == $lastnumbnumber ]]; then
+				break
+			else
+				let numbword=$numbword+1
+			fi
+		done
+		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
+	;;
+	3)
 		echo -en "set minimum: " && read minimum
 		echo -en "set maximum: " && read maximum
 		echo ""
@@ -195,7 +223,7 @@ while true; do
 			echo -e "\tset minimum and maximum number are so important!"
 		fi
 	;;
-	3)
+	4)
 		wordarray=($words)
 		special=("~" "~~" "~~~" "!" "!!" "!!!" "@" "@@" "@@@" "#" "##" "###" "$" "$$" "$$$" "%" "%%" "%%%" "^" "^^" "^^^" "&" "&&" "&&&" "*" "**" "***" "~!@" "#$%" "^&*" "*&^" "%$#" "@!~" "@#" "#$" "$%" "%^" "^&" "&*" "*&" "&^" "^%" "%$" "$#" "#@" "@!" "!~" "~!@" "!@#" "@#$" "#$%" "#$%" "$%^" "^%$" "%$#" "$#@" "#@!" "@!~" "!|" "!@|+" "!@#|+_" "$%^)(*" ")" "^*" "^%*(" "^%$" "&*(" "^%$#@!" "*()_+|" "|!" "|+!@" "|+_!@#" ")(*$%^" "*^" "*(^%" "_+|$#!" "!@#$%^" "|+_)(*" "^%$#@!" "*()_+|")
 		echo -e "\n\tspecial:\n"
@@ -311,7 +339,7 @@ while true; do
 		;;
 		esac
 	;;
-	4)
+	5)
 		echo -e "\tadd some words for all:"
 		read someword
 		if [[ $some == "" ]]; then
@@ -432,7 +460,7 @@ while true; do
 		esac
 		fi
 	;;
-	5)
+	6)
 		echo -e "\tremove equal words & sort:"
 		(
 		echo $(sort $passlist | uniq) > $passlist
