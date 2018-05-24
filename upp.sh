@@ -3,15 +3,15 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 banner="# ./07.dat\n\t\t ${bold}_\n\t0${normal}${bold}7${normal}\t[|] ${bold}0${normal}ffensive ${bold}7${normal}ester\n\n"
 clear
-echo -en "# \r"; sleep 0.1
+echo -en "#\r"; sleep 0.1
 echo -en "# .\r"; sleep 0.1
-echo -en "# ./ \r"; sleep 0.1
-echo -en "# ./0 \r"; sleep 0.1
-echo -en "# ./07 \r"; sleep 0.1
-echo -en "# ./07. \r"; sleep 0.2
-echo -en "# ./07.d \r"; sleep 0.2
-echo -en "# ./07.da \r"; sleep 0.2
-echo -en "# ./07.dat \r"; sleep 0.2
+echo -en "# ./\r"; sleep 0.1
+echo -en "# ./0\r"; sleep 0.1
+echo -en "# ./07\r"; sleep 0.1
+echo -en "# ./07.\r"; sleep 0.2
+echo -en "# ./07.d\r"; sleep 0.2
+echo -en "# ./07.da\r"; sleep 0.2
+echo -en "# ./07.dat\r"; sleep 0.2
 echo -e ${banner} && echo -e "
 
                    ▄ 
@@ -28,6 +28,7 @@ user2014
 
 
 "
+words=""
 if ! [[ $1 ]]; then
 	echo -e "\t*select file location: [/root/Desktop/pass.list]"
 	read passlist
@@ -57,26 +58,54 @@ if [ ! -f $passlist ]; then
 fi
 echo -e "\ttype words: [sweet macaron music 1996]"
 read words
-echo  $words | sed 's/ /\n/g' >> $passlist
+if [[ $words != "" ]]; then
+wordarray=($words)
+	for (( a = 0; a < ${#wordarray[@]}; a++ )); do
+		for (( b = 0; b < ${#wordarray[@]}; b++ )); do
+			if [[ $a != $b ]]; then
+				addWord+="${wordarray[a]}${wordarray[b]} "
+			fi
+		done
+	done
+	wordarray+=($addWord)
+fi
+echo  ${wordarray[@]} | sed 's/ /\n/g' >> $passlist
 while true; do
-	echo -e "\n\tselect your option:\n\t[0] exit / done\n\t[1] l337 mode\n\t[2] UppERcasE mode\n\t[3] add numbers\n\t[4] add special characters\n\t[5] add some words for all\n\t[6] remove equal words & sort"
+	echo -e "\n\tselect your option:\n\t[0] exit / done\n\t[1] leet mode\n\t[2] uppercase mode\n\t[3] add numbers\n\t[4] add special characters\n\t[5] add some words for all\n\t[6] remove equal words & sort"
 	read opinion
 	case $opinion in
 	0)
 		exit 1
 	;;
 	1)
-		(
-		leet=$(echo $words | sed 's/a/4/g' | sed 's/A/4/g' | sed 's/e/3/g' | sed 's/E/3/g' | sed 's/i/1/g' | sed 's/I/1/g' | sed 's/m/w/g' | sed 's/M/w/g' | sed 's/o/0/g' | sed 's/O/0/g' | sed 's/s/5/g' | sed 's/S/5/g' | sed 's/t/7/g' | sed 's/T/7/g' | sed 's/g/9/g' | sed 's/G/9/g' | sed 's/w/m/g' | sed 's/W/m/g'| sed 's/z/2/g'| sed 's/Z/2/g')
-		echo  $leet | sed 's/ /\n/g' >> $passlist
-		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
+		echo -e "\tleet mode:\n"
+		echo -e "\tset for:\n\t[0] go back\n\t[1] leet mode\n\t[2] super leet"
+		read how
+		case $how in
+		0);;
+		1)
+			(
+			leet=$(echo ${wordarray[@]} | sed 's/a/4/g' | sed 's/A/4/g' | sed 's/e/3/g' | sed 's/E/3/g' | sed 's/g/9/g' | sed 's/G/9/g' | sed 's/i/1/g' | sed 's/I/1/g' | sed 's/o/0/g' | sed 's/O/0/g' | sed 's/s/5/g' | sed 's/S/5/g' | sed 's/t/7/g' | sed 's/T/7/g' | sed 's/z/2/g'| sed 's/Z/2/g')
+			echo  $leet | sed 's/ /\n/g' >> $passlist
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
+		;;
+		2)
+			(
+			superLeet=$(echo ${wordarray[@]} | sed 's/a/\/-\\/g' | sed 's/A/\/-\\/g' | sed 's/b/\|3/g' | sed 's/B/\|3/g' | sed 's/d/\|\)/g' | sed 's/D/\|\)/g' | sed 's/e/3/g' | sed 's/E/3/g' |  sed 's/g/9/g' | sed 's/G/9/g' | sed 's/h/\|-\|/g' | sed 's/H/\|-\|/g' | sed 's/i/1/g' | sed 's/I/1/g' | sed 's/k/\|\</g' | sed 's/k/\|\</g' | sed 's/l/\|_/g' | sed 's/L/\|_/g' | sed 's/m/\|V\|/g' | sed 's/M/\|V\|/g' | sed 's/n/\|\\\|/g' | sed 's/N/\|\\\|/g' | sed 's/r/\|2/g' | sed 's/R/\|2/g' | sed 's/o/0/g' | sed 's/O/0/g' | sed 's/s/5/g' | sed 's/S/5/g' | sed 's/t/7/g' | sed 's/T/7/g' | sed 's/v/\\\//g' | sed 's/V/\\\//g' | sed 's/w/vv/g' | sed 's/W/vv/g'| sed 's/x/\>\</g' | sed 's/X/\>\</g'| sed 's/z/2/g'| sed 's/Z/2/g')
+
+			echo  $superLeet | sed 's/ /\n/g' >> $passlist
+			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
+		;;
+		*)
+		echo -e "\twrong choice"
+		;;
+		esac
 	;;
 	2)
 		(
-		wordarray=($words)
 		numbword=0
 		while [[ true ]]; do
-			let lastnumbnumber=${#number[@]}-1;
+			let lastnumbnumber=${#wordarray[@]}-1;
 			currentword=${wordarray[$numbword]}
 			if [[ $currentword == "" ]]; then
 				break
@@ -104,7 +133,7 @@ while true; do
 		echo -en "set maximum: " && read maximum
 		echo ""
 		if [[ $minimum != "" ]] && [[ $maximum != "" ]]; then
-			wordarray=($words)
+			#wordarray=($words)
 			number=($(for (( numberArray == $minimum; numberArray <= $maximum; numberArray++ )); do echo -en "$numberArray "; done))
 			echo -e "\tnumbers:\n"
 			echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end"
@@ -129,7 +158,7 @@ while true; do
 							break
 						fi
 						echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#number[@]}-1;
+						let lastnumbnumber=${#wordarray[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]];then
 							let numbnumber=$numbnumber+1
 						else
@@ -163,7 +192,7 @@ while true; do
 							break
 						fi
 						echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#number[@]}-1;
+							let lastnumbnumber=${#wordarray[@]}-1;
 							if ! [[ $lastnumbnumber == $numbnumber ]]; then
 								let numbnumber=$numbnumber+1
 							else
@@ -198,7 +227,7 @@ while true; do
 						fi
 						echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
 						echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#number[@]}-1;
+						let lastnumbnumber=${#wordarray[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]]; then
 							let numbnumber=$numbnumber+1
 						else
@@ -224,7 +253,6 @@ while true; do
 		fi
 	;;
 	4)
-		wordarray=($words)
 		special=("~" "~~" "~~~" "!" "!!" "!!!" "@" "@@" "@@@" "#" "##" "###" "$" "$$" "$$$" "%" "%%" "%%%" "^" "^^" "^^^" "&" "&&" "&&&" "*" "**" "***" "~!@" "#$%" "^&*" "*&^" "%$#" "@!~" "@#" "#$" "$%" "%^" "^&" "&*" "*&" "&^" "^%" "%$" "$#" "#@" "@!" "!~" "~!@" "!@#" "@#$" "#$%" "#$%" "$%^" "^%$" "%$#" "$#@" "#@!" "@!~" "!|" "!@|+" "!@#|+_" "$%^)(*" ")" "^*" "^%*(" "^%$" "&*(" "^%$#@!" "*()_+|" "|!" "|+!@" "|+_!@#" ")(*$%^" "*^" "*(^%" "_+|$#!" "!@#$%^" "|+_)(*" "^%$#@!" "*()_+|")
 		echo -e "\n\tspecial:\n"
 		echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end"
@@ -249,7 +277,7 @@ while true; do
 						break
 					fi
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbspecial=${#number[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbspecial=${#wordarray[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
@@ -283,7 +311,7 @@ while true; do
 						break
 					fi
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbspecial=${#number[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbspecial=${#wordarray[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
@@ -318,7 +346,7 @@ while true; do
 					fi
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbspecial=${#number[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbspecial=${#wordarray[@]}-1 && echo $lastnumbspecial) == $numbnumber ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
@@ -344,7 +372,6 @@ while true; do
 		read someword
 		if [[ $some == "" ]]; then
 		echo -e "\tadd some words for all:"
-		wordarray=($words)
 		some=($someword)
 		echo -e "\n\tsome:\n"
 		echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end"
@@ -369,7 +396,7 @@ while true; do
 						break
 					fi
 					echo "$somes$currentword" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbsome=${#number[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbsome=${#wordarray[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
 						let numbsome=$numbsome+1
 					else
 						break
@@ -403,7 +430,7 @@ while true; do
 						break
 					fi
 					echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbsome=${#number[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbsome=${#wordarray[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
 						let numbsome=$numbsome+1
 					else
 						break
@@ -438,7 +465,7 @@ while true; do
 					fi
 					echo "$somes$currentword" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
-					if ! [[ $(let lastnumbsome=${#number[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
+					if ! [[ $(let lastnumbsome=${#wordarray[@]}-1 && echo $lastnumbsome) == $numbnumber ]]; then
 						let numbsome=$numbsome+1
 					else
 						break
