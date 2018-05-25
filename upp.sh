@@ -35,12 +35,12 @@ if ! [[ $1 ]]; then
 else
 	passlist=$1
 fi
-if [ -d $passlist ]; then
-	echo -e "\terror: this is directory name!\n"
-	exit 1
-fi
 if [[ $passlist == "" ]]; then
 	echo -e "\tsorry, but select a file location for save passlist is too important!\n"
+	exit 1
+fi
+if [ -d $passlist ]; then
+	echo -e "\terror: this is directory name!\n"
 	exit 1
 fi
 if [[ ${passlist:00:01} == "~" ]]; then
@@ -158,7 +158,7 @@ while true; do
 							break
 						fi
 						echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#wordarray[@]}-1;
+						let lastnumbnumber=${#number[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]];then
 							let numbnumber=$numbnumber+1
 						else
@@ -192,7 +192,7 @@ while true; do
 							break
 						fi
 						echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#wordarray[@]}-1;
+							let lastnumbnumber=${#number[@]}-1;
 							if ! [[ $lastnumbnumber == $numbnumber ]]; then
 								let numbnumber=$numbnumber+1
 							else
@@ -227,7 +227,7 @@ while true; do
 						fi
 						echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
 						echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#wordarray[@]}-1;
+						let lastnumbnumber=${#number[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]]; then
 							let numbnumber=$numbnumber+1
 						else
@@ -262,7 +262,7 @@ while true; do
 							break
 						fi
 						echo "$numbers$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#wordarray[@]}-1;
+						let lastnumbnumber=${#number[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]]; then
 							let numbnumber=$numbnumber+1
 						else
@@ -299,7 +299,7 @@ while true; do
 						echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
 						echo "$numbers$currentword$numbers" | sed 's/ /\n/g' >> $passlist
 						echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-						let lastnumbnumber=${#wordarray[@]}-1;
+						let lastnumbnumber=${#number[@]}-1;
 						if ! [[ $lastnumbnumber == $numbnumber ]]; then
 							let numbnumber=$numbnumber+1
 						else
