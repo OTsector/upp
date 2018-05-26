@@ -712,8 +712,8 @@ while true; do
 	6)
 		echo -e "\tremove equal words & sort:"
 		(
-		echo $(sort $passlist | uniq) > $passlist
-		foo=$(cat $passlist); echo -e ${foo// /\\n} > $passlist
+		echo $(sort $passlist | uniq -u) > $passlist
+		sed 's/ /\n/g' -i $passlist
 		) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n"
 	;;
 	*)
