@@ -687,8 +687,8 @@ while true; do
 					echo "$somes$currentword$somes" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
 					let lastnumbsome=${#wordarray[@]}-1;
-					if ! [[ $lastnumbsome == $numbnumber ]]; then
-						let numbsome=$numbspecial+1
+					if ! [[ $lastnumbsome == $numbsome ]]; then
+						let numbsome=$numbsome+1
 					else
 						break
 					fi
