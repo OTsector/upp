@@ -355,21 +355,13 @@ while true; do
 						break
 					fi
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
-					let lastnumbnumber=${#wordarray[@]}-1;
+					let lastnumbspecial=${#special[@]}-1;
 					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
 					fi
 				done
-				numbspecial=0
-				if [[ $currentword == "" ]]; then
-					break
-				fi
-				if ! [[ $numbspecial == 1 ]]; then
-					let numbword=$numbword+1
-				fi
-			done
 				numbspecial=0
 				if [[ $currentword == "" ]]; then
 					break
@@ -398,7 +390,7 @@ while true; do
 						break
 					fi
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					let lastnumbnumber=${#wordarray[@]}-1;
+					let lastnumbspecial=${#special[@]}-1;
 					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
@@ -409,10 +401,6 @@ while true; do
 				if [[ $currentword == "" ]]; then
 					break
 				fi
-				if ! [[ $numbspecial == 1 ]]; then
-					let numbword=$numbword+1
-				fi
-			done
 				if ! [[ $numbspecial == 1 ]]; then
 					let numbword=$numbword+1
 				fi
@@ -438,7 +426,7 @@ while true; do
 					fi
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					let lastnumbnumber=${#wordarray[@]}-1;
+					let lastnumbspecial=${#special[@]}-1;
 					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
@@ -473,7 +461,7 @@ while true; do
 						break
 					fi
 					echo "$specials$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					let lastnumbnumber=${#wordarray[@]}-1;
+					let lastnumbspecial=${#special[@]}-1;
 					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
@@ -510,8 +498,8 @@ while true; do
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
 					echo "$specials$currentword$specials" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-					let lastnumbnumber=${#wordarray[@]}-1;
-					if ! [[ $lastnumbspecial == $lastnumbspecial ]]; then
+					let lastnumbspecial=${#special[@]}-1;
+					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
