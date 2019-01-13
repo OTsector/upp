@@ -325,7 +325,13 @@ while true; do
 		fi
 	;;
 	4)
-		special=("~" "~~" "~~~" "!" "!!" "!!!" "@" "@@" "@@@" "#" "##" "###" "$" "$$" "$$$" "%" "%%" "%%%" "^" "^^" "^^^" "&" "&&" "&&&" "*" "**" "***" "~!@" "#$%" "^&*" "*&^" "%$#" "@!~" "@#" "#$" "$%" "%^" "^&" "&*" "*&" "&^" "^%" "%$" "$#" "#@" "@!" "!~" "~!@" "!@#" "@#$" "#$%" "#$%" "$%^" "^%$" "%$#" "$#@" "#@!" "@!~" "!|" "!@|+" "!@#|+_" "$%^)(*" ")" "^*" "^%*(" "^%$" "&*(" "^%$#@!" "*()_+|" "|!" "|+!@" "|+_!@#" ")(*$%^" "*^" "*(^%" "_+|$#!" "!@#$%^" "|+_)(*" "^%$#@!" "*()_+|")
+		special=('~' '~~' '~~~' '!' '!!' '!!!' '@' '@@' '@@@' '#' '##' '###' \
+			'$' '$$' '$$$' '%' '%%' '%%%' '^' '^^' '^^^' '&' '&&' '&&&' \
+			'*' '**' '***' '~!@' '#$%' '^&*' '*&^' '%$#' '@!~' '@#' '#$' '$%' \
+			'%^' '^&' '&*' '*&' '&^' '^%' '%$' '$#' '#@' '@!' '!~' '~!@' '!@#' '@#$' \
+			'#$%' '#$%' '$%^' '^%$' '%$#' '$#@' '#@!' '@!~' '!|' '!@|+' '!@#|+_' '$%^)(*' \
+			')' '^*' '^%*(' '^%$' '&*(' '^%$#@!' '*()_+|' '|!' '|+!@' '|+_!@#' ')(*$%^' '*^' \
+			'*(^%' '_+|$#!' '!@#$%^' '|+_)(*' '^%$#@!' '*()_+|')
 		echo -e "\n\tspecial:\n"
 		echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
 		read how
@@ -350,12 +356,20 @@ while true; do
 					fi
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
 					let lastnumbnumber=${#wordarray[@]}-1;
-					if ! [[ $lastnumbspecial == $lastnumbspecial ]]; then
+					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
 					fi
 				done
+				numbspecial=0
+				if [[ $currentword == "" ]]; then
+					break
+				fi
+				if ! [[ $numbspecial == 1 ]]; then
+					let numbword=$numbword+1
+				fi
+			done
 				numbspecial=0
 				if [[ $currentword == "" ]]; then
 					break
@@ -385,7 +399,7 @@ while true; do
 					fi
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
 					let lastnumbnumber=${#wordarray[@]}-1;
-					if ! [[ $lastnumbspecial == $lastnumbspecial ]]; then
+					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
@@ -395,6 +409,10 @@ while true; do
 				if [[ $currentword == "" ]]; then
 					break
 				fi
+				if ! [[ $numbspecial == 1 ]]; then
+					let numbword=$numbword+1
+				fi
+			done
 				if ! [[ $numbspecial == 1 ]]; then
 					let numbword=$numbword+1
 				fi
@@ -421,7 +439,7 @@ while true; do
 					echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
 					echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
 					let lastnumbnumber=${#wordarray[@]}-1;
-					if ! [[ $lastnumbspecial == $lastnumbspecial ]]; then
+					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
@@ -456,7 +474,7 @@ while true; do
 					fi
 					echo "$specials$currentword$specials" | sed 's/ /\n/g' >> $passlist
 					let lastnumbnumber=${#wordarray[@]}-1;
-					if ! [[ $lastnumbspecial == $lastnumbspecial ]]; then
+					if ! [[ $lastnumbspecial == $numbspecial ]]; then
 						let numbspecial=$numbspecial+1
 					else
 						break
