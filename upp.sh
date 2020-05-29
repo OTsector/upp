@@ -119,9 +119,9 @@ while true; do
 			echo -e "\tERROR: wrong choice for $currentopinion"
 		fi
 		if [[ ${currentopinion:0:1} == 3 ]] && [[ $boolean = true ]]; then
-			echo -e "\tnumbers:\n"
+			echo -e "\tnumbers:"
 		while [[ $minimum == "" ]]; do
-			echo -en "set minimum: " && read minimum
+			echo -en "set minimum: "; read minimum
 			if [[ $minimum == "" ]]; then
 				echo -e "\tERROR: set minimum number is too important"
 			else
@@ -137,7 +137,14 @@ while true; do
 			fi
 		done
 		elif [[ ${currentopinion:0:1} == 5 ]] && [[ $boolean = true ]]; then
-			echo -e "\tadd some words for all:"; read someword
+			while [[ $someword == "" ]]; do
+							echo -e "\tadd some words for all:"; read someword
+				if [[ $someword == "" ]]; then
+					echo -e "\tERROR: input some words is too important"
+				else
+					break
+				fi
+			done
 		fi
 	done
 	if [[ $boolean = false ]]; then
