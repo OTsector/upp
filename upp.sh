@@ -52,7 +52,7 @@ if [[ ${passlist:00:01} == "~" ]]; then
 fi
 setfile=$(echo $passlist | sed 's/\// /g') && setfilearray=($setfile) && file=${setfilearray[-1]}
 setdirectory=$(echo $passlist |  sed 's/.'$file'//') && directory=$setdirectory
-
+buffersizemax=50000
 if [ ! -d $directory ]; then
 	echo -e "\terror: can't create file on this directory!\n"
 	exit 1
@@ -66,7 +66,6 @@ while [[ $words == "" ]]; do
 	echo -e "\tERROR: the words are empty\n\n\ttype words: [facebook password qwerty 1996]"
 	read words
 done
-#if [[ $words != "" ]]; then
 wordarray=($words)
 	for (( a = 0; a < ${#wordarray[@]}; a++ )); do
 		for (( b = 0; b < ${#wordarray[@]}; b++ )); do
@@ -76,8 +75,7 @@ wordarray=($words)
 		done
 	done
 wordarray+=($addWord)
-#fi
-echo  ${wordarray[@]} | sed 's/ /\n/g' >> $passlist
+sed 's/ /\n/g' <<< ${wordarray[@]} >> $passlist
 while true; do
 	opinion=""
 	how=""
@@ -108,7 +106,6 @@ while true; do
 			done
 		done
 	fi
-	#echo ${opinionarray[@]}
 	for (( i = 0; i < ${#opinionarray[@]}; i++ )); do
 		currentopinion=${opinionarray[$i]}
 		boolean=false
@@ -121,20 +118,24 @@ while true; do
 		if [[ $boolean = false ]]; then
 			echo -e "\tERROR: wrong choice for $currentopinion"
 		fi
-
-		#echo ${currentopinion}
 		if [[ ${currentopinion:0:1} == 3 ]] && [[ $boolean = true ]]; then
 			echo -e "\tnumbers:\n"
-		if [[ $minimum == "" ]]; then
+		while [[ $minimum == "" ]]; do
 			echo -en "set minimum: " && read minimum
-		else
-			echo -e "\tERROR: set minimum number is too important"
-		fi
-		if [[ $maximum == "" ]]; then
+			if [[ $minimum == "" ]]; then
+				echo -e "\tERROR: set minimum number is too important"
+			else
+				break
+			fi
+		done
+		while [[ $maximum == "" ]]; do
 			echo -en "set maximum: " && read maximum
-		else
-			echo -e "\tERROR: set maximum number is too important"
-		fi
+			if [[ $maximum == "" ]]; then
+				echo -e "\tERROR: set maximum number is too important"
+			else
+				break
+			fi
+		done
 		elif [[ ${currentopinion:0:1} == 5 ]] && [[ $boolean = true ]]; then
 			echo -e "\tadd some words for all:"; read someword
 		fi
@@ -168,11 +169,10 @@ while true; do
 					echo -e "\tleet mode: normal mode"
 				fi
 				(
-				leet=$(echo ${wordarray[@]} \
-					| sed -e 's/a/4/g' -e 's/A/4/g' -e 's/e/3/g' -e 's/E/3/g' -e 's/g/9/g' -e 's/G/9/g' \
+				leet=$(sed -e 's/a/4/g' -e 's/A/4/g' -e 's/e/3/g' -e 's/E/3/g' -e 's/g/9/g' -e 's/G/9/g' \
 						-e 's/i/1/g' -e 's/I/1/g' -e 's/o/0/g' -e 's/O/0/g' -e 's/s/5/g' -e 's/S/5/g' \
-						-e 's/t/7/g' -e 's/T/7/g' -e 's/z/2/g' -e 's/Z/2/g')
-				echo  $leet | sed 's/ /\n/g' >> $passlist
+						-e 's/t/7/g' -e 's/T/7/g' -e 's/z/2/g' -e 's/Z/2/g' <<< ${wordarray[@]})
+				tr " " "\n" <<< $leet >> $passlist
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
 			2)
@@ -180,8 +180,7 @@ while true; do
 				echo -e "\tleet mode: super mode"
 			fi
 				(
-				superLeet=$(echo ${wordarray[@]} \
-					| sed -e 's/a/\/-\\/g' -e 's/A/\/-\\/g' -e 's/b/\|3/g' -e 's/B/\|3/g' \
+				superLeet=$(sed -e 's/a/\/-\\/g' -e 's/A/\/-\\/g' -e 's/b/\|3/g' -e 's/B/\|3/g' \
 						-e 's/c/\(/g' -e 's/C/\(/g' -e 's/d/\|\)/g' -e 's/D/\|\)/g' \
 						-e 's/e/3/g' -e 's/E/3/g' -e 's/g/9/g' -e 's/G/9/g' \
 						-e 's/h/\|-\|/g' -e 's/H/\|-\|/g' -e 's/i/1/g' -e 's/I/1/g' \
@@ -190,9 +189,9 @@ while true; do
 						-e 's/r/\|2/g' -e 's/R/\|2/g' -e 's/o/0/g' -e 's/O/0/g' \
 						-e 's/s/5/g' -e 's/S/5/g' -e 's/t/7/g' -e 's/T/7/g' -e 's/u/\|_\|/g' \
 						-e 's/u/\|_\|/g' -e 's/v/\\\//g' -e 's/V/\\\//g' -e 's/w/vv/g' -e 's/W/vv/g' \
-						-e 's/x/\>\</g' -e 's/X/\>\</g' -e 's/z/2/g' -e 's/Z/2/g')
+						-e 's/x/\>\</g' -e 's/X/\>\</g' -e 's/z/2/g' -e 's/Z/2/g' <<< ${wordarray[@]})
 
-				echo  $superLeet | sed 's/ /\n/g' >> $passlist
+				tr " " "\n" <<< $superLeet >> $passlist
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
 			*)
@@ -206,18 +205,9 @@ while true; do
 			fi
 			(
 			numbword=0
-			while [[ true ]]; do
-				let lastnumbnumber=${#wordarray[@]}-1;
-				currentword=${wordarray[$numbword]}
-				if [[ $currentword == "" ]]; then
-					break
-				fi
+			for((i=0; i<${#wordarray[@]}; i++)); do
+				currentword=${wordarray[$i]}
 				eval echo $(echo $currentword | sed 's/./{\U&,\L&}/g')|tr " " "\n" >> $passlist
-				if [[ $numbword == $lastnumbnumber ]]; then
-					break
-				else
-					let numbword=$numbword+1
-				fi
 			done
 			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 		;;
@@ -228,16 +218,11 @@ while true; do
 				echo -en "set maximum: " && read maximum
 			fi
 			if [[ $minimum != "" ]] && [[ $maximum != "" ]]; then
-				#wordarray=($words)
-				number=($(
-					for (( numberArray = $minimum; numberArray <= $maximum; numberArray++ )); do
-						zeroer=""; for((zero=0; zero<${#minimum}-${#numberArray}; zero++))
-						do  zeroer+=0; done; echo -en "$zeroer$numberArray "
-					done
-				))
 				if [[ ${#opinionarray[@]} == 1 ]]; then
-					echo -e "\tnumbers:\n"
-					echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+					echo -e "\tnumbers:"
+					if [[ $how == "" ]]; then
+						echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+					fi
 				fi
 				if [[ $how == "" ]]; then
 					read how
@@ -257,34 +242,23 @@ while true; do
 					(
 					numbword=0
 					numbnumber=0
-					while [[ true ]]; do
-						currentword=${wordarray[$numbword]}
-						while [[ true ]]; do
-							if [[ $currentword == "" ]]; then
-								break
+					buffersize=0
+					for((i=0; i<${#wordarray[@]}; i++)); do
+						currentword=${wordarray[$i]}
+						for((j=$minimum; j<=$maximum; j++)); do
+							zero="";
+							for((z=0; z<${#minimum}-${#j}; z++)) do
+								zero+="0"
+							done 
+							numbers=$zero$j
+							buffer+=" $numbers$currentword"
+							if [ $buffersize -eq $buffersizemax ]; then
+								tr " " "\n" <<< $buffer >> $passlist
+								buffer=""; buffersize=0
 							fi
-							numbers=${number[$numbnumber]}
-							if [[ $numbers == "" ]]; then
-								let numbnumber=$numbnumber+1
-								numbnumber=0
-								break
-							fi
-							echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#number[@]}-1;
-							if ! [[ $lastnumbnumber == $numbnumber ]];then
-								let numbnumber=$numbnumber+1
-							else
-								break
-							fi
+							let buffersize++
 						done
-						numbnumber=0
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						if ! [[ $numbnumber == 1 ]]; then
-							let numbword=$numbword+1
-						fi
-					done
+					done; tr " " "\n" <<< $buffer >> $passlist; buffer=""
 					) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 				;;
 				2)
@@ -295,34 +269,23 @@ while true; do
 					fi
 					numbword=0
 					numbnumber=0
-					while [[ true ]]; do
-						currentword=${wordarray[$numbword]}
-						while [[ true ]]; do
-							if [[ $currentword == "" ]]; then
-								break
+					buffersize=0
+					for((i=0; i<${#wordarray[@]}; i++)); do
+						currentword=${wordarray[$i]}
+						for((j=$minimum; j<=$maximum; j++)); do
+							zero="";
+							for((z=0; z<${#minimum}-${#j}; z++)) do
+								zero+="0"
+							done 
+							numbers=$zero$j
+							buffer+=" $currentword$numbers"
+							if [ $buffersize -eq $buffersizemax ]; then
+								tr " " "\n" <<< $buffer >> $passlist
+								buffer=""; buffersize=0
 							fi
-							numbers=${number[$numbnumber]}
-							if [[ $numbers == "" ]]; then
-								let numbnumber=$numbnumber+1
-								numbnumber=0
-								break
-							fi
-							echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-								let lastnumbnumber=${#number[@]}-1;
-								if ! [[ $lastnumbnumber == $numbnumber ]]; then
-									let numbnumber=$numbnumber+1
-								else
-									break
-								fi
+							let buffersize++
 						done
-						numbnumber=0
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						if ! [[ $numbnumber == 1 ]]; then
-							let numbword=$numbword+1
-						fi
-					done
+					done; tr " " "\n" <<< $buffer >> $passlist; buffer=""
 				;;
 				3)
 					if [[ ${#opinionarray[@]} == 1 ]]; then
@@ -333,35 +296,24 @@ while true; do
 					(
 					numbword=0
 					numbnumber=0
-					while [[ true ]]; do
-						currentword=${wordarray[$numbword]}
-						while [[ true ]]; do
-							if [[ $currentword == "" ]]; then
-								break
+					buffersize=0
+					for((i=0; i<${#wordarray[@]}; i++)); do
+						currentword=${wordarray[$i]}
+						for((j=$minimum; j<=$maximum; j++)); do
+							zero="";
+							for((z=0; z<${#minimum}-${#j}; z++)) do
+								zero+="0"
+							done 
+							numbers=$zero$j
+							buffer+=" $numbers$currentword"
+							buffer+=" $currentword$numbers"
+							if [ $buffersize -eq $buffersizemax ]; then
+								tr " " "\n" <<< $buffer >> $passlist
+								buffer=""; buffersize=0
 							fi
-							numbers=${number[$numbnumber]}
-							if [[ $numbers == "" ]]; then
-								let numbnumber=$numbnumber+1
-								numbnumber=0
-								break
-							fi
-							echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
-							echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#number[@]}-1;
-							if ! [[ $lastnumbnumber == $numbnumber ]]; then
-								let numbnumber=$numbnumber+1
-							else
-								break
-							fi
+							let buffersize++
 						done
-						numbnumber=0
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						if ! [[ $numbnumber == 1 ]]; then
-							let numbword=$numbword+1
-						fi
-					done
+					done; tr " " "\n" <<< $buffer >> $passlist; buffer=""
 					) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 				;;
 				4)
@@ -373,34 +325,23 @@ while true; do
 					(
 					numbword=0
 					numbnumber=0
-					while [[ true ]]; do
-						currentword=${wordarray[$numbword]}
-						while [[ true ]]; do
-							if [[ $currentword == "" ]]; then
-								break
+					buffersize=0
+					for((i=0; i<${#wordarray[@]}; i++)); do
+						currentword=${wordarray[$i]}
+						for((j=$minimum; j<=$maximum; j++)); do
+							zero="";
+							for((z=0; z<${#minimum}-${#j}; z++)) do
+								zero+="0"
+							done 
+							numbers=$zero$j
+							buffer+=" $numbers$currentword$numbers"
+							if [ $buffersize -eq $buffersizemax ]; then
+								tr " " "\n" <<< $buffer >> $passlist
+								buffer=""; buffersize=0
 							fi
-							numbers=${number[$numbnumber]}
-							if [[ $numbers == "" ]]; then
-								let numbnumber=$numbnumber+1
-								numbnumber=0
-								break
-							fi
-							echo "$numbers$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#number[@]}-1;
-							if ! [[ $lastnumbnumber == $numbnumber ]]; then
-								let numbnumber=$numbnumber+1
-							else
-								break
-							fi
+							let buffersize++
 						done
-						numbnumber=0
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						if ! [[ $numbnumber == 1 ]]; then
-							let numbword=$numbword+1
-						fi
-					done
+					done; tr " " "\n" <<< $buffer >> $passlist; buffer=""
 					) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 				;;
 				5)
@@ -412,36 +353,25 @@ while true; do
 					(
 					numbword=0
 					numbnumber=0
-					while [[ true ]]; do
-						currentword=${wordarray[$numbword]}
-						while [[ true ]]; do
-							if [[ $currentword == "" ]]; then
-								break
+					buffersize=0
+					for((i=0; i<${#wordarray[@]}; i++)); do
+						currentword=${wordarray[$i]}
+						for((j=$minimum; j<=$maximum; j++)); do
+							zero="";
+							for((z=0; z<${#minimum}-${#j}; z++)) do
+								zero+="0"
+							done 
+							numbers=$zero$j
+							buffer+=" $numbers$currentword"
+							buffer+=" $numbers$currentword$numbers"
+							buffer+=" $currentword$numbers"
+							if [ $buffersize -eq $buffersizemax ]; then
+								tr " " "\n" <<< $buffer >> $passlist
+								buffer=""; buffersize=0
 							fi
-							numbers=${number[$numbnumber]}
-							if [[ $numbers == "" ]]; then
-								let numbnumber=$numbnumber+1
-								numbnumber=0
-								break
-							fi
-							echo "$numbers$currentword" | sed 's/ /\n/g' >> $passlist
-							echo "$numbers$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							echo "$currentword$numbers" | sed 's/ /\n/g' >> $passlist
-							let lastnumbnumber=${#number[@]}-1;
-							if ! [[ $lastnumbnumber == $numbnumber ]]; then
-								let numbnumber=$numbnumber+1
-							else
-								break
-							fi
+							let buffersize++
 						done
-						numbnumber=0
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						if ! [[ $numbnumber == 1 ]]; then
-							let numbword=$numbword+1
-						fi
-					done
+					done; tr " " "\n" <<< $buffer >> $passlist; buffer=""
 					) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 				;;
 				*)
@@ -462,7 +392,9 @@ while true; do
 				'*(^%' '_+|$#!' '!@#$%^' '|+_)(*' '^%$#@!' '*()_+|')
 			if [[ ${#opinionarray[@]} == 1 ]]; then
 				echo -e "\n\tspecial:\n"
-				echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+				if [[ $how == "" ]]; then
+					echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+				fi
 			fi
 			if [[ $how == "" ]]; then
 				read how
@@ -482,33 +414,12 @@ while true; do
 				(
 				numbword=0
 				numbspecial=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						specials=${special[$numbspecial]}
-						if [[ $specials == "" ]]; then
-							let numbspecial=$numbspecial+1
-							numbspecial=0
-							break
-						fi
-						echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
-						let lastnumbspecial=${#special[@]}-1;
-						if ! [[ $lastnumbspecial == $numbspecial ]]; then
-							let numbspecial=$numbspecial+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#special[@]}; j++)); do
+						specials=${special[$j]}
+						tr " " "\n" <<< "$specials$currentword $j" >> $passlist
 					done
-					numbspecial=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbspecial == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -521,33 +432,12 @@ while true; do
 				(
 				numbword=0
 				numbspecial=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						specials=${special[$numbspecial]}
-						if [[ $specials == "" ]]; then
-							let numbspecial=$numbspecial+1
-							numbspecial=0
-							break
-						fi
-						echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-						let lastnumbspecial=${#special[@]}-1;
-						if ! [[ $lastnumbspecial == $numbspecial ]]; then
-							let numbspecial=$numbspecial+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#special[@]}; j++)); do
+						specials=${special[$j]}
+						tr " " "\n" <<< "$currentword$specials" >> $passlist
 					done
-					numbspecial=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbspecial == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -560,34 +450,13 @@ while true; do
 				(
 				numbword=0
 				numbspecial=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						specials=${special[$numbspecial]}
-						if [[ $specials == "" ]]; then
-							let numbspecial=$numbspecial+1
-							numbspecial=0
-							break
-						fi
-						echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
-						echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-						let lastnumbspecial=${#special[@]}-1;
-						if ! [[ $lastnumbspecial == $numbspecial ]]; then
-							let numbspecial=$numbspecial+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#special[@]}; j++)); do
+						specials=${special[$j]}
+						tr " " "\n" <<< "$specials$currentword" >> $passlist
+						tr " " "\n" <<< "$currentword$specials" >> $passlist
 					done
-					numbspecial=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbspecial == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -600,33 +469,12 @@ while true; do
 				(
 				numbword=0
 				numbspecial=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						specials=${special[$numbspecial]}
-						if [[ $specials == "" ]]; then
-							let numbspecial=$numbspecial+1
-							numbspecial=0
-							break
-						fi
-						echo "$specials$currentword$specials" | sed 's/ /\n/g' >> $passlist
-						let lastnumbspecial=${#special[@]}-1;
-						if ! [[ $lastnumbspecial == $numbspecial ]]; then
-							let numbspecial=$numbspecial+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#special[@]}; j++)); do
+						specials=${special[$j]}
+						tr " " "\n" <<< "$specials$currentword$specials" >> $passlist
 					done
-					numbspecial=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbspecial == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -639,35 +487,14 @@ while true; do
 				(
 				numbword=0
 				numbspecial=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						specials=${special[$numbspecial]}
-						if [[ $specials == "" ]]; then
-							let numbspecial=$numbspecial+1
-							numbspecial=0
-							break
-						fi
-						echo "$specials$currentword" | sed 's/ /\n/g' >> $passlist
-						echo "$specials$currentword$specials" | sed 's/ /\n/g' >> $passlist
-						echo "$currentword$specials" | sed 's/ /\n/g' >> $passlist
-						let lastnumbspecial=${#special[@]}-1;
-						if ! [[ $lastnumbspecial == $numbspecial ]]; then
-							let numbspecial=$numbspecial+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#special[@]}; j++)); do
+						specials=${special[$j]}
+						tr " " "\n" <<< "$specials$currentword" >> $passlist
+						tr " " "\n" <<< "$specials$currentword$specials" >> $passlist
+						tr " " "\n" <<< "$currentword$specials" >> $passlist
 					done
-					numbspecial=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbspecial == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -687,10 +514,11 @@ while true; do
 			some=($someword)
 			if [[ ${#opinionarray[@]} == 1 ]]; then
 				echo -e "\tadd some words for all:"
-				echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+				if [[ $how == "" ]]; then
+					echo -e "\tset for:\n\t[0] go back\n\t[1] beginning\n\t[2] end\n\t[3] beginning & end\n\t[4] for both side\n\t[5] all of them"
+				fi
 			fi
 			if [[ $how == "" ]]; then
-				echo -e "\n\tsome:\n"
 				read how
 			fi
 			if [[ $how == "" ]]; then
@@ -708,33 +536,12 @@ while true; do
 				(
 				numbword=0
 				numbsome=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						somes=${some[$numbsome]}
-						if [[ $somes == "" ]]; then
-							let numbsome=$numbsome+1
-							numbsome=0
-							break
-						fi
-						echo "$somes$currentword" | sed 's/ /\n/g' >> $passlist
-						let lastnumbsome=${#wordarray[@]}-1;
-						if ! [[ $lastnumbsome == $numbsome ]]; then
-							let numbsome=$numbsome+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#some[@]}; j++)); do
+						somes=${some[$j]}
+						tr " " "\n" <<< "$somes$currentword" >> $passlist
 					done
-					numbsome=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbsome == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -747,33 +554,12 @@ while true; do
 				(
 				numbword=0
 				numbsome=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						somes=${some[$numbsome]}
-						if [[ $somes == "" ]]; then
-							let numbsome=$numbsome+1
-							numbsome=0
-							break
-						fi
-						echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
-						let lastnumbsome=${#wordarray[@]}-1;
-						if ! [[ $lastnumbsome == $numbsome ]]; then
-							let numbsome=$numbsome+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#some[@]}; j++)); do
+						somes=${some[$j]}
+						tr " " "\n" <<< "$currentword$somes" >> $passlist
 					done
-					numbsome=4
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbsome == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -786,34 +572,13 @@ while true; do
 				(
 				numbword=0
 				numbsome=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						somes=${some[$numbsome]}
-						if [[ $somes == "" ]]; then
-							let numbsome=$numbsome+1
-							numbsome=0
-							break
-						fi
-						echo "$somes$currentword" | sed 's/ /\n/g' >> $passlist
-						echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
-						let lastnumbsome=${#wordarray[@]}-1;
-						if ! [[ $lastnumbsome == $numbsome ]]; then
-							let numbsome=$numbsome+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#some[@]}; j++)); do
+						somes=${some[$j]}
+						tr " " "\n" <<< "$somes$currentword" >> $passlist
+						tr " " "\n" <<< "$currentword$somes" >> $passlist
 					done
-					numbsome=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbsome == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -826,33 +591,12 @@ while true; do
 				(
 				numbword=0
 				numbsome=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						somes=${some[$numbsome]}
-						if [[ $somes == "" ]]; then
-							let numbsome=$numbsome+1
-							numbsome=0
-							break
-						fi
-						echo "$somes$currentword$somes" | sed 's/ /\n/g' >> $passlist
-						let lastnumbsome=${#wordarray[@]}-1;
-						if ! [[ $lastnumbsome == $numbsome ]]; then
-							let numbsome=$numbsome+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#some[@]}; j++)); do
+						somes=${some[$j]}
+						tr " " "\n" <<< "$somes$currentword$somes" >> $passlist
 					done
-					numbsome=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbsome == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -865,35 +609,14 @@ while true; do
 				(
 				numbword=0
 				numbsome=0
-				while [[ true ]]; do
-					currentword=${wordarray[$numbword]}
-					while [[ true ]]; do
-						if [[ $currentword == "" ]]; then
-							break
-						fi
-						somes=${some[$numbsome]}
-						if [[ $somes == "" ]]; then
-							let numbsome=$numbsome+1
-							numbsome=0
-							break
-						fi
-						echo "$somes$currentword" | sed 's/ /\n/g' >> $passlist
-						echo "$somes$currentword$somes" | sed 's/ /\n/g' >> $passlist
-						echo "$currentword$somes" | sed 's/ /\n/g' >> $passlist
-						let lastnumbsome=${#wordarray[@]}-1;
-						if ! [[ $lastnumbsome == $numbsome ]]; then
-							let numbsome=$numbsome+1
-						else
-							break
-						fi
+				for((i=0; i<${#wordarray[@]}; i++)); do
+					currentword=${wordarray[$i]}
+					for((j=0; j<${#some[@]}; j++)); do
+						somes=${some[$j]}
+						tr " " "\n" <<< "$somes$currentword" >> $passlist
+						tr " " "\n" <<< "$somes$currentword$somes" >> $passlist
+						tr " " "\n" <<< "$currentword$somes" >> $passlist
 					done
-					numbsome=0
-					if [[ $currentword == "" ]]; then
-						break
-					fi
-					if ! [[ $numbsome == 1 ]]; then
-						let numbword=$numbword+1
-					fi
 				done
 				) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 			;;
@@ -912,9 +635,6 @@ while true; do
 			sed 's/ /\n/g' -i $passlist
 			) | echo -en "\n\tloading...\r" && echo -en "\tdone!                \r\n\n"
 		;;
-		#*)
-		#		echo -e "\twrong choice"
-		#;;
 		esac
 	done
 done
